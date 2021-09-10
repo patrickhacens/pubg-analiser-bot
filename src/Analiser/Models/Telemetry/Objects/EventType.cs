@@ -56,5 +56,8 @@ namespace PUBG.Models.Telemetry
         LogItemPickupFromCustomPackage,
         LogBlackZoneEnded,
         LogPlayerDestroyBreachableWall,
+        //check exists
+        LogItemPutToVehicleTrunk,
+        LogItemPickupFromVehicleTrunk
     }
 }
