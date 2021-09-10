@@ -44,52 +44,74 @@ namespace PUBG.Analiser
                 yield return GetSummaryField(characterResult);
             }
 
-            foreach (var characterResult in teamResult.Members)
+            var evs = teamResult.Members
+                .SelectMany(m => m.Combats
+                    .SelectMany(c => c.Events
+                        .Select(ev => (
+                            Member: m.Name,
+                            Action: CombatText(ev.Type, ev.Direction),
+                            Enemy: c.Name,
+                            When: ev.When,
+                            combat: c,
+                            _event: ev,
+                            Weapon: WeaponNames[ev.Weapon]))))
+                .OrderBy(d => d.When);
+
+            List<string> texts = new List<string>();
+
+            StringBuilder sb = new StringBuilder();
+            foreach (var ev in evs)
             {
-                var knockTexts = characterResult
-                    .Combats
-                    .SelectMany(d => d.Events.Select(ev => (combat: d, ev: ev)))
-                    .OrderBy(d => d.ev.When)
-                    .Select(d =>
-                    {
-                        StringBuilder sb = new StringBuilder();
-                        sb.Append($"**{d.combat.Name}** {CombatTranslation[d.ev.Type]} **{WeaponNames[d.ev.Weapon]}**");
-                        if (d.ev.Type == CombatType.IncomingKill || d.ev.Type == CombatType.OutgoingKill)
-                        {
-                            sb.AppendLine();
-                            sb.Append($"causou: {d.combat.TotalOutgoingDamage:N0} x {d.combat.TotalIncomingDamage:N0} :recebeu");
-                        }
-
-                        return sb.ToString();
-                    });
-
-                var dmgTexts = characterResult
-                    .Combats
-                    .Where(d => !d.Events.Any())
-                    .Select(d => $"**{d.Name}** => causou: {d.TotalOutgoingDamage:N0} x {d.TotalIncomingDamage:N0} :recebeu");
-
-                if (knockTexts.Any())
-                    yield return new EmbedFieldBuilder()
-                        .WithName($"Abatimentos de {characterResult.Name}")
-                        .WithIsInline(false)
-                        .WithValue(String.Join("\n", knockTexts));
-
-                if (dmgTexts.Any())
-                    yield return new EmbedFieldBuilder()
-                        .WithName($"Trocas sem resultados de {characterResult.Name}")
-                        .WithIsInline(false)
-                        .WithValue(String.Join("\n", dmgTexts));
+                bool isLastEventOfCombat = ev._event == ev.combat.Events.Last();
+                var line = $"**{ev.Member}** {ev.Action} **{ev.Enemy}** com {ev.Weapon}";
+                if (isLastEventOfCombat)
+                    line += $"\n**{ev.Member}**: {ev.combat.TotalOutgoingDamage:N0} x {ev.combat.TotalIncomingDamage:N0} :**{ev.Enemy}**";
+                if (sb.Length + line.Length > 1024)
+                {
+                    texts.Add(sb.ToString());
+                    sb.Clear();
+                }
+                sb.AppendLine(line);
+            }
+            if (sb.Length > 0 )
+            {
+                texts.Add(sb.ToString());
+                sb.Clear();
+            }
+            for (int i = 0; i < texts.Count; i++)
+            {
+                string name = "Team log";
+                if (texts.Count > 1)
+                    name += $" ({(i + 1)}/{texts.Count})";
+                yield return new EmbedFieldBuilder()
+                    .WithName(name)
+                    .WithIsInline(false)
+                    .WithValue(texts[i]);
             }
         }
 
 
-        static readonly Dictionary<CombatType, string> CombatTranslation = new Dictionary<CombatType, string>()
+        static readonly Dictionary<CombatType, string> OutgoingCombatTypeTranslation = new Dictionary<CombatType, string>()
         {
-            { CombatType.IncomingDbno, "derrubou com" },
-            { CombatType.IncomingKill, "matou com" },
-            { CombatType.OutgoingDbno, "derrubado para" },
-            { CombatType.OutgoingKill, "morto para" },
+            { CombatType.Dbno, "derrubou" },
+            { CombatType.Kill, "matou" },
+            { CombatType.LastTrade, "trocou com" }
         };
+
+        static readonly Dictionary<CombatType, string> IncomingCombatTypeTranslation = new Dictionary<CombatType, string>()
+        {
+            { CombatType.Dbno, "caiu para" },
+            { CombatType.Kill, "morreu para" },
+            { CombatType.LastTrade, "trocou com" }
+        };
+
+        static string CombatText(CombatType type, CombatDirection direction)
+        {
+            if (direction == CombatDirection.Incoming)
+                return IncomingCombatTypeTranslation[type];
+            else
+                return OutgoingCombatTypeTranslation[type];
+        }
 
         static string TeamSizeTranslation(int teamSize)
         {

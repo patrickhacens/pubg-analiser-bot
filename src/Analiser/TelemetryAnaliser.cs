@@ -87,7 +87,6 @@ namespace PUBG
                 throw new Exception("Player not in match");
 
             var playerDamages = Damages.Where(d => d.Attacker?.AccountId == playerId || d.Victim?.AccountId == playerId).ToArray();
-            var playerDbnos = Dbnos.Where(d => d.Attacker?.AccountId == playerId || d.Victim?.AccountId == playerId).ToArray();
             var playerKills = Kills.Where(d => d.Killer?.AccountId == playerId || d.Victim?.AccountId == playerId).ToArray();
             var deaths = playerKills.Where(d => d.Victim?.AccountId == playerId).ToArray();
 
@@ -118,7 +117,7 @@ namespace PUBG
                                .Where(f => f.Attacker?.AccountId == playerId)
                                .Where(f => f.Victim?.AccountId == enemyId)
                                .Sum(f => f.Damage),
-                           Events = new ReadOnlyCollection<CombatEvent>(GetEventsBetween(playerDbnos, playerKills, playerId, enemyId).ToList())
+                           Events = new ReadOnlyCollection<CombatEvent>(GetEventsBetween(playerDamages, playerKills, playerId, enemyId).ToList())
                        }).ToList())
                 };
             }
@@ -160,30 +159,52 @@ namespace PUBG
                 .Distinct()
                 .ToArray();
 
-        private static IEnumerable<CombatEvent> GetEventsBetween(IEnumerable<PlayerTakeDamage> dbos, IEnumerable<PlayerKill> kills, string playerId, string oponnentId)
+        private static IEnumerable<CombatEvent> GetEventsBetween(IEnumerable<PlayerTakeDamage> dmgs, IEnumerable<PlayerKill> kills, string playerId, string oponnentId)
         {
-
-            var dbosBetween = dbos
+            var dbosBetween = dmgs
+                .Where(d => d.Damage >= d.Victim.Health && d.Victim.Health > 0)
                 .Where(d => d.Attacker?.AccountId == oponnentId || d.Victim?.AccountId == oponnentId)
                 .Select(d => new CombatEvent
                 {
-                    Type = d.Attacker.AccountId == playerId ? CombatType.OutgoingDbno : CombatType.IncomingDbno,
+                    Direction = d.Attacker.AccountId == playerId ? CombatDirection.Outgoing : CombatDirection.Incoming,
+                    Type = CombatType.Dbno,
                     When = d._D,
                     Weapon = d.DamageCauserName,
                     DamageReason = d.DamageReason,
                     DamageType = d.DamageTypeCategory
                 });
 
+            var lastTrade = dmgs
+                .Where(d => d.Attacker?.AccountId == oponnentId || d.Victim?.AccountId == oponnentId)
+                .Select(d => new CombatEvent
+                {
+                    Direction = CombatDirection.None,
+                    Type = CombatType.LastTrade,
+                    When = d._D,
+                    Weapon = d.DamageCauserName,
+                    DamageReason = d.DamageReason,
+                    DamageType = d.DamageTypeCategory
+                })
+                .OrderByDescending(d => d.When)
+                .Take(1);
+
+
             var kill = kills
                 .Where(d => d.Killer?.AccountId == oponnentId || d.Victim?.AccountId == oponnentId)
                 .Select(d => new CombatEvent
                 {
                     When = d._D,
-                    Type = d.Killer.AccountId == playerId ? CombatType.OutgoingKill : CombatType.IncomingKill,
+                    Type = CombatType.Kill,
+                    Direction = d.Killer.AccountId == playerId ? CombatDirection.Outgoing : CombatDirection.Incoming,
                     DamageType = d.KillerDamageInfo.DamageTypeCategory,
                     DamageReason = d.KillerDamageInfo.DamageReason,
                     Weapon = d.KillerDamageInfo.DamageCauserName
                 });
+
+            
+            if (!kill.Any() && !dbosBetween.Any())
+                return lastTrade;
+
             return dbosBetween.Concat(kill).OrderBy(d => d.When);
         }
     }
