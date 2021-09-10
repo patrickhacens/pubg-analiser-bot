@@ -7,6 +7,8 @@ namespace PUBG.Analiser
     {
         public CombatType Type { get; set; }
 
+        public CombatDirection Direction { get; set; }
+
         public DateTime When { get; set; }
 
         public string Weapon { get; set; }

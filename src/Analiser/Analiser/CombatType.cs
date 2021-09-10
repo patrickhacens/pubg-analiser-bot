@@ -2,9 +2,8 @@
 {
     public enum CombatType
     {
-        IncomingDbno,
-        IncomingKill,
-        OutgoingDbno,
-        OutgoingKill
+        Dbno,
+        Kill,
+        LastTrade,
     }
 }
