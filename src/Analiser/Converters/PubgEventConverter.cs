@@ -69,7 +69,7 @@ namespace PUBG.Converters
                     EventType.LogItemPickupFromCustomPackage => j.ToObject<ItemPickupFromCustomPackage>(),
                     EventType.LogBlackZoneEnded => j.ToObject<BlackZoneEnded>(),
                     EventType.LogPlayerDestroyBreachableWall => j.ToObject<PlayerDestroyBreachableWall>(),
-                    _ => throw new NotImplementedException($"no translation for EventType = {j["_T"]}")
+                    _ => j.ToObject<Event>(),
                 };
             }
 
