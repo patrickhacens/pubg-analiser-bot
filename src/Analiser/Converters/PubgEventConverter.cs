@@ -72,7 +72,7 @@ namespace PUBG.Converters
                     _ => j.ToObject<Event>(),
                 };
             }
-
+            return new Event();
             throw new NotImplementedException($"no enum for EventType = {j["_T"]}");
         }
 

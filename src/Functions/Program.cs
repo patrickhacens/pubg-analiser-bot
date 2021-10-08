@@ -37,11 +37,6 @@ namespace PUBG.Analiser.Functions
                     services.AddSingleton<StorageOptions>(storageOptions);
 
                     services.AddTransient<PUBGApi>(sp => new PUBGApi(context.Configuration.GetSection("PUBGApiOptions").Get<PUBGApiOptions>()));
-
-                    services.AddTransient<DiscordWebhookClient>(sp => new DiscordWebhookClient(
-                        sp.GetRequiredService<IConfiguration>()
-                        .GetSection("DiscordWebhook")
-                        .Get<string>()));
                 })
                 .Build();
 

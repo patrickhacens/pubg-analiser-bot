@@ -11,14 +11,14 @@ namespace PUBG.Analiser
 {
     public static class DiscordMessage
     {
-        public static EmbedBuilder GetEmbed(TeamResult teamResult, Match match)
+        public static EmbedBuilder GetEmbedWithoutFields(TeamResult teamResult, Match match)
         => new EmbedBuilder()
             .WithAuthor(GetEmbedAuthor(teamResult, match))
             .WithTitle($"Rank: {teamResult.Rank} com {teamResult.OutgoingDamage:N0} de dano e {teamResult.Kills:N0} kills")
             .WithThumbnailUrl($"https://raw.githubusercontent.com/pubg/api-assets/master/Assets/MapSelection/{MapTranslation[teamResult.MapName]}.{MapExtension[teamResult.MapName]}")
             .WithUrl($"https://pubglookup.com/players/{match.Attributes.ShardId}/{teamResult.Members.FirstOrDefault()?.Name}/matches/{match.Id}")
-            .WithFooter(GetEmbedFooter(teamResult))
-            .WithFields(GetFields(teamResult));
+            .WithFooter(GetEmbedFooter(teamResult));
+            
 
         public static EmbedAuthorBuilder GetEmbedAuthor(TeamResult teamResult, Match match)
             => new EmbedAuthorBuilder()
@@ -36,6 +36,14 @@ namespace PUBG.Analiser
             .WithName(result.Name)
             .WithValue($"{result.OutgoingDamage:N0}/{result.IncomingDamage:N0}/{result.Kills:N0}")
             .WithIsInline(true);
+
+        public static IEnumerable<EmbedFieldBuilder> GetSummaryFields(TeamResult teamResult)
+        {
+            foreach (var characterResult in teamResult.Members)
+            {
+                yield return GetSummaryField(characterResult);
+            }
+        }
 
         public static IEnumerable<EmbedFieldBuilder> GetFields(TeamResult teamResult)
         {
@@ -66,7 +74,7 @@ namespace PUBG.Analiser
                 var line = $"**{ev.Member}** {ev.Action} **{ev.Enemy}** com {ev.Weapon}";
                 if (isLastEventOfCombat)
                     line += $"\n**{ev.Member}**: {ev.combat.TotalOutgoingDamage:N0} x {ev.combat.TotalIncomingDamage:N0} :**{ev.Enemy}**";
-                if (sb.Length + line.Length > 1024)
+                if (sb.Length + line.Length > 900)
                 {
                     texts.Add(sb.ToString());
                     sb.Clear();

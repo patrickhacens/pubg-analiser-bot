@@ -58,6 +58,7 @@ namespace PUBG.Models.Telemetry
         LogPlayerDestroyBreachableWall,
         //check exists
         LogItemPutToVehicleTrunk,
-        LogItemPickupFromVehicleTrunk
+        LogItemPickupFromVehicleTrunk,
+        LogCharacterCarry
     }
 }

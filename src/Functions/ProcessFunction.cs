@@ -11,6 +11,7 @@ using Azure.Storage.Queues;
 using Discord;
 using Discord.Webhook;
 using Microsoft.Azure.Functions.Worker;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using PUBG.Analiser.Functions.Model;
@@ -95,15 +96,84 @@ namespace PUBG.Analiser.Functions
                         if (teams.Any())
                         {
                             log.LogInformation($"{teams.Count()} analised in match, retrieving discord client");
-                            var discordClient = context.InstanceServices.GetRequiredService<DiscordWebhookClient>();
+                            var configuration = context.InstanceServices.GetRequiredService<IConfiguration>();
+                            var matchLogDiscordClient = new DiscordWebhookClient(configuration.GetValue<string>("MatchLogDiscordWebhook"));
+                            var chickenDinnerDiscordClient = new DiscordWebhookClient(configuration.GetValue<string>("ChickenDinnerWebhook"));
 
                             foreach (var team in teams)
                             {
-                                var embed = DiscordMessage.GetEmbed(team, matchData.Data).Build();
-                                log.LogInformation("Sending data for team {teamId}\ncall is {call}", team.Id, embed);
-                                await discordClient.SendMessageAsync(
-                                    text: String.Join("; ", team.Members.Select(d => players.FirstOrDefault(f => f.Id == d.Id)?.DiscordId).Where(d => !String.IsNullOrWhiteSpace(d))),
-                                    embeds: new Embed[] { embed });                                     
+                                var embedBuilder = DiscordMessage.GetEmbedWithoutFields(team, matchData.Data);
+                                var fields = DiscordMessage.GetFields(team).Select(d => (builder: d, field: d.Build()));
+
+
+                                var fieldqueue = new Queue<(EmbedFieldBuilder builder, EmbedField field)>(fields);
+
+                                int getLength(EmbedField field) => field.Name.Length + field.Value.Length;
+
+                                List<List<EmbedFieldBuilder>> groups = new List<List<EmbedFieldBuilder>>();
+                                List<EmbedFieldBuilder> group = new List<EmbedFieldBuilder>();
+                                int currentGroupLength = 0;
+
+                                while (fieldqueue.Count > 0)
+                                {
+                                    var fb = fieldqueue.Dequeue();
+                                    var targetLength = getLength(fb.field);
+                                    if (currentGroupLength + targetLength >= 5000)
+                                    {
+                                        groups.Add(group);
+                                        group = new List<EmbedFieldBuilder>() { fb.builder };
+                                        currentGroupLength = targetLength;
+                                    }
+                                    else
+                                    {
+                                        group.Add(fb.builder);
+                                        currentGroupLength += targetLength;
+                                    }
+                                }
+                                if (group.Any())
+                                {
+                                    groups.Add(group);
+                                }
+
+                                ulong messageId = 0;
+                                if (groups.Count > 1)
+                                {
+                                    var embedsBuilders = groups.Select(d => DiscordMessage.GetEmbedWithoutFields(team, matchData.Data).WithFields(d));
+                                    var embeds = embedsBuilders.Take(1).Concat(embedsBuilders.Skip(1).Select(d => d.WithTitle("continuação"))).Select(d=>d.Build());
+                                    foreach (var embed in embeds)
+                                    {
+                                        var mId = await matchLogDiscordClient.SendMessageAsync(
+                                                text: String.Join("; ", team.Members.Select(d => players.FirstOrDefault(f => f.Id == d.Id)?.DiscordId).Where(d => !String.IsNullOrWhiteSpace(d))),
+                                                embeds: new Embed[] { embed });
+                                        if (messageId == 0)
+                                            messageId = mId;
+                                    }
+                                }
+                                else
+                                {
+                                    var embed = DiscordMessage.GetEmbedWithoutFields(team, matchData.Data)
+                                        .WithFields(group)
+                                        .Build();
+                                    messageId = await matchLogDiscordClient.SendMessageAsync(
+                                        text: String.Join("; ", team.Members.Select(d => players.FirstOrDefault(f => f.Id == d.Id)?.DiscordId).Where(d => !String.IsNullOrWhiteSpace(d))),
+                                        embeds: new Embed[] { embed });
+
+
+                                }
+                                if (team.Rank == 1)
+                                {
+                                    var winBuilder = DiscordMessage.GetEmbedWithoutFields(team, matchData.Data)
+                                        .WithFields(DiscordMessage.GetSummaryFields(team));
+
+                                    var winembed = winBuilder
+                                        .WithFooter("Clique no link para ver o match log")
+                                        .WithUrl($"https://discord.com/channels/468173278952030209/882740719624814602/{messageId}")
+                                        .Build();
+
+                                        
+                                    await chickenDinnerDiscordClient.SendMessageAsync(embeds: new Embed[] { winembed });
+                                }
+
                             }
                         }
                         else
