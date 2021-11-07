@@ -7,6 +7,7 @@
         FlyingVehicle,
         Parachute,
         TransportAircraft,
-        WheeledVehicle
+        WheeledVehicle,
+        Mortar
     }
 }

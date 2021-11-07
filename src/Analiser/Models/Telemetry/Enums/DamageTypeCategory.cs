@@ -36,6 +36,7 @@
         Damage_VehicleCrashHit,
         Damage_VehicleHit,
         SpikeTrap,
-        Damage_BlueZoneGrenade
+        Damage_BlueZoneGrenade,
+        Damage_Explosion_Mortar
     }
 }

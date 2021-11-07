@@ -18,7 +18,7 @@ namespace PUBG.Analiser
             .WithThumbnailUrl($"https://raw.githubusercontent.com/pubg/api-assets/master/Assets/MapSelection/{MapTranslation[teamResult.MapName]}.{MapExtension[teamResult.MapName]}")
             .WithUrl($"https://pubglookup.com/players/{match.Attributes.ShardId}/{teamResult.Members.FirstOrDefault()?.Name}/matches/{match.Id}")
             .WithFooter(GetEmbedFooter(teamResult));
-            
+
 
         public static EmbedAuthorBuilder GetEmbedAuthor(TeamResult teamResult, Match match)
             => new EmbedAuthorBuilder()
@@ -81,7 +81,7 @@ namespace PUBG.Analiser
                 }
                 sb.AppendLine(line);
             }
-            if (sb.Length > 0 )
+            if (sb.Length > 0)
             {
                 texts.Add(sb.ToString());
                 sb.Clear();
@@ -348,7 +348,8 @@ namespace PUBG.Analiser
             {"WeapVSS_C", "VSS" },
             {"Weapvz61Skorpion_C", "Skorpion" },
             {"WeapWin94_C", "Win94" },
-            {"WeapWinchester_C", "S1897" }
+            {"WeapWinchester_C", "S1897" },
+            {"Mortar_Projectile_C", "Morteiro"}
         };
     }
 }

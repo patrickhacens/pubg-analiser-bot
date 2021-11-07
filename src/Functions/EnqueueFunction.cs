@@ -14,7 +14,13 @@ namespace PUBG.Analiser.Functions
     public static class EnqueueFunction
     {
         [Function("EnqueueFunction")]
-        public static async Task Run([TimerTrigger("0 */5 * * * *")] MyInfo myTimer, FunctionContext context)
+        public static async Task Run(
+#if DEBUG
+            [TimerTrigger("0 * * * * *")] 
+#else
+            [TimerTrigger("0 */5 * * * *")] 
+#endif
+            MyInfo myTimer, FunctionContext context)
         {
             var logger = context.GetLogger("EnqueueFunction");
             logger.LogInformation($"Enqueue function executed at: {DateTime.Now}");
