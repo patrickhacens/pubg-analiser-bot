@@ -349,7 +349,8 @@ namespace PUBG.Analiser
             {"Weapvz61Skorpion_C", "Skorpion" },
             {"WeapWin94_C", "Win94" },
             {"WeapWinchester_C", "S1897" },
-            {"Mortar_Projectile_C", "Morteiro"}
+            {"Mortar_Projectile_C", "Morteiro"},
+            { "BP_Bicycle_C", "Bike"}
         };
     }
 }
