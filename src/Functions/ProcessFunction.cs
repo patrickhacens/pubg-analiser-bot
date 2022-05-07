@@ -22,8 +22,8 @@ namespace PUBG.Analiser.Functions
     public static class ProcessFunction
     {
         [Function("ProcessFunction")]
-        //public static async Task Run([TimerTrigger("0 */1 * * * *")] MyInfo myTimer, FunctionContext context)
-        public static async Task Run([TimerTrigger("* * * * * *")] MyInfo myTimer, FunctionContext context)
+        //public static async Task Run([TimerTrigger("* * * * * *")] MyInfo myTimer, FunctionContext context)
+        public static async Task Run([TimerTrigger("0 */1 * * * *")] MyInfo myTimer, FunctionContext context)
         {
             var log = context.GetLogger("ProcessFunction");
             log.LogInformation($"Process function executed at: {DateTime.Now}");
