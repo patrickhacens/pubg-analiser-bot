@@ -108,7 +108,7 @@ namespace PUBG
                        .Select(enemyId => new CombatResult
                        {
                            EnemyId = enemyId,
-                           Name = Players[enemyId].Name,
+                           Name = Players.GetValueOrDefault(enemyId)?.Name ?? "[zé qualquer]",
                            TotalIncomingDamage = playerDamages
                                .Where(f => f.Attacker?.AccountId == enemyId)
                                .Where(f => f.Victim?.AccountId == playerId)
@@ -142,7 +142,7 @@ namespace PUBG
                 Members = new ReadOnlyCollection<CharacterResult>(playersIds.Select(d => AnalisePlayer(d)).ToList())
             };
 
-            result.Rank = result.Members.Select(m => Players[m.Id].Ranking).Min();
+            result.Rank = result.Members.Select(m => Players.GetValueOrDefault(m?.Id)?.Ranking ?? 999).Min();
             result.IncomingDamage = result.Members.Sum(d => d.IncomingDamage);
             result.OutgoingDamage = result.Members.Sum(d => d.OutgoingDamage);
             result.Kills = result.Members.Sum(d => d.Kills);

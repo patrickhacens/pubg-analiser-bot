@@ -13,7 +13,7 @@ namespace PUBG.Analiser.Functions
 {
     public static class EnqueueFunction
     {
-        [Function("EnqueueFunction")]
+        //[Function("EnqueueFunction")]
         public static async Task Run(
 #if DEBUG
             [TimerTrigger("0 * * * * *")] 

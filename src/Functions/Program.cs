@@ -25,13 +25,13 @@ namespace PUBG.Analiser.Functions
 
                     #region Ensure services existance
                     var matchesTable = new TableClient(storageOptions.ConnectionString, storageOptions.MatchTableName);
-                    matchesTable.CreateIfNotExists();
+                    //matchesTable.CreateIfNotExists();
 
                     var playersTable = new TableClient(storageOptions.ConnectionString, storageOptions.PlayerTableName);
-                    playersTable.CreateIfNotExists();
+                    //playersTable.CreateIfNotExists();
 
                     var matchesQueue = new QueueClient(storageOptions.ConnectionString, storageOptions.QueueName);
-                    matchesQueue.CreateIfNotExists();
+                    //matchesQueue.CreateIfNotExists();
                     #endregion
 
                     services.AddSingleton<StorageOptions>(storageOptions);

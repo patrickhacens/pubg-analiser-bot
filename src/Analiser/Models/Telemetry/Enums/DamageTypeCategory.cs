@@ -37,6 +37,8 @@
         Damage_VehicleHit,
         SpikeTrap,
         Damage_BlueZoneGrenade,
-        Damage_Explosion_Mortar
+        Damage_Explosion_Mortar,
+        Damage_MotorGlider,
+        Damage_Rotor,
     }
 }

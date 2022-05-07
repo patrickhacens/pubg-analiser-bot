@@ -15,7 +15,7 @@ namespace PUBG.Analiser
         => new EmbedBuilder()
             .WithAuthor(GetEmbedAuthor(teamResult, match))
             .WithTitle($"Rank: {teamResult.Rank} com {teamResult.OutgoingDamage:N0} de dano e {teamResult.Kills:N0} kills")
-            .WithThumbnailUrl($"https://raw.githubusercontent.com/pubg/api-assets/master/Assets/MapSelection/{MapTranslation[teamResult.MapName]}.{MapExtension[teamResult.MapName]}")
+            .WithThumbnailUrl($"https://raw.githubusercontent.com/pubg/api-assets/master/Assets/MapSelection/{MapTranslation.GetValueOrDefault(teamResult.MapName)}.{MapExtension.GetValueOrDefault(teamResult.MapName)}")
             .WithUrl($"https://pubglookup.com/players/{match.Attributes.ShardId}/{teamResult.Members.FirstOrDefault()?.Name}/matches/{match.Id}")
             .WithFooter(GetEmbedFooter(teamResult));
 
@@ -23,7 +23,7 @@ namespace PUBG.Analiser
         public static EmbedAuthorBuilder GetEmbedAuthor(TeamResult teamResult, Match match)
             => new EmbedAuthorBuilder()
             //.WithIconUrl($"https://raw.githubusercontent.com/pubg/api-assets/master/Assets/MapSelection/{MapTranslation[teamResult.MapName]}.{MapExtension[teamResult.MapName]}")
-            .WithName($"{MapTranslation[teamResult.MapName]} - {TeamSizeTranslation(teamResult.TeamSize)}")
+            .WithName($"{MapTranslation.GetValueOrDefault(teamResult.MapName,teamResult.MapName)} - {TeamSizeTranslation(teamResult.TeamSize)}")
             .WithUrl($"https://pubglookup.com/players/{match.Attributes.ShardId}/{teamResult.Members.FirstOrDefault()?.Name}/matches/{match.Id}");
 
         public static EmbedFooterBuilder GetEmbedFooter(TeamResult teamResult)
@@ -62,8 +62,8 @@ namespace PUBG.Analiser
                             When: ev.When,
                             combat: c,
                             _event: ev,
-                            Weapon: WeaponNames[ev.Weapon]))))
-                .OrderBy(d => d.When);
+                            Weapon: WeaponNames.GetValueOrDefault(ev.Weapon, ev.Weapon)))
+                .OrderBy(d => d.When)));
 
             List<string> texts = new List<string>();
 
@@ -350,7 +350,8 @@ namespace PUBG.Analiser
             {"WeapWin94_C", "Win94" },
             {"WeapWinchester_C", "S1897" },
             {"Mortar_Projectile_C", "Morteiro"},
-            { "BP_Bicycle_C", "Bike"}
+            { "BP_Bicycle_C", "Bike"},
+            {"WeapACE32_C", "Ace32" }
         };
     }
 }
