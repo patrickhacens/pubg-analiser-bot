@@ -1,5 +1,6 @@
 ﻿using PUBG;
 using PUBG.Models;
+using PUBG.Models.Telemetry;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
@@ -18,18 +19,18 @@ namespace Poc
                 ApiKey = key
             });
 
-            var matchData = await api.Match("c53e7830-a4ee-4791-8b67-ba5b05b29d35");
+            var matchData = await api.Match("e934f864-ec7e-46f6-b6d0-a67a7f772a50");
 
             var telemetryUrl = matchData.Included.OfType<Asset>()
                 .First()
                 .Attributes
                 .Url;
             var telemetry = await api.Telemetry(matchData);
-            var analiser = new TelemetryAnaliser(telemetry);
+            var types = telemetry
+                .Select(d => d.GetType())
+                .Distinct()
+                .ToArray();
 
-
-            Discord.Webhook.DiscordWebhookClient client = new Discord.Webhook.DiscordWebhookClient("");
-            
         }
     }
 }

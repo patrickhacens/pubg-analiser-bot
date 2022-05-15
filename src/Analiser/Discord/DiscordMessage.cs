@@ -62,8 +62,8 @@ namespace PUBG.Analiser
                             When: ev.When,
                             combat: c,
                             _event: ev,
-                            Weapon: WeaponNames.GetValueOrDefault(ev.Weapon, ev.Weapon)))
-                .OrderBy(d => d.When)));
+                            Weapon: WeaponNames.GetValueOrDefault(ev.Weapon, ev.Weapon)))))
+                .OrderBy(d => d.When);
 
             List<string> texts = new List<string>();
 
