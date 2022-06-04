@@ -7,6 +7,7 @@
         Equipment,
         Event,
         Use,
-        Weapon
+        Weapon,
+        Belt
     }
 }

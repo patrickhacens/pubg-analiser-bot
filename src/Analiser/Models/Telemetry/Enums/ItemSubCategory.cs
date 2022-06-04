@@ -17,6 +17,7 @@
         Revive,
         Sight,
         Throwable,
-        Vest
+        Vest,
+        Belt
     }
 }
