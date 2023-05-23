@@ -1,34 +1,41 @@
 using System;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 using Azure.Data.Tables;
 using Azure.Storage.Queues;
 using Microsoft.Azure.Functions.Worker;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using PUBG.Analiser.Functions.Model;
+using PUBG;
+using PUBG.Analiser.Functions.Models;
 
 namespace PUBG.Analiser.Functions
 {
-    public static class EnqueueFunction
+    public class EnqueueFunction
     {
+        private readonly ILogger logger;
+        private readonly StorageOptions storageOptions;
+        private readonly PUBGApi pubg;
+
+        public EnqueueFunction(ILoggerFactory loggerFactory, 
+            StorageOptions storageOptions,
+            PUBGApi pubg)
+        {
+            logger = loggerFactory.CreateLogger<EnqueueFunction>();
+            this.storageOptions=storageOptions;
+            this.pubg=pubg;
+        }
+
         [Function("EnqueueFunction")]
-        public static async Task Run(
+        public async Task Run(
 #if DEBUG
             [TimerTrigger("0 * * * * *")] 
 #else
             [TimerTrigger("0 */5 * * * *")] 
 #endif
-            MyInfo myTimer, FunctionContext context)
+            MyInfo myTimer)
         {
-            var logger = context.GetLogger("EnqueueFunction");
-            logger.LogInformation($"Enqueue function executed at: {DateTime.Now}");
-            logger.LogInformation($"Next timer schedule at: {myTimer.ScheduleStatus.Next}");
-            
-            StorageOptions storageOptions = context.InstanceServices.GetRequiredService<StorageOptions>();
+            logger.LogInformation("Enqueue function executed at: {time}", DateTime.Now);
+            logger.LogInformation("Next timer schedule at: {time}", myTimer.ScheduleStatus.Next);
 
-            CancellationTokenSource tks = new CancellationTokenSource();
+            CancellationTokenSource tks = new();
 
             var playerTable = new TableClient(storageOptions.ConnectionString, storageOptions.PlayerTableName);
             var matchesTable = new TableClient(storageOptions.ConnectionString, storageOptions.MatchTableName);
@@ -40,7 +47,6 @@ namespace PUBG.Analiser.Functions
             var players = await playerTable.QueryAsync<Member>().ToListAsync();
             var playersIds = players.Select(d => d.Id);
 
-            PUBGApi pubg = context.InstanceServices.GetRequiredService<PUBGApi>();
 
             logger.LogInformation("Retrieving players matches");
             var playersResult = await pubg.PlayersByIds(playersIds, tks.Token);
@@ -51,7 +57,7 @@ namespace PUBG.Analiser.Functions
             var newMatchesToQueue = matches.Where(d => !processedMatches.Any(f => f == d));
             if (newMatchesToQueue.Any())
             {
-                logger.LogInformation($"{newMatchesToQueue.Count()} new matches to queue");
+                logger.LogInformation("{count} new matches to queue", newMatchesToQueue.Count());
 
                 var queueTasks = newMatchesToQueue.Select(matchToQ => matchesQueue.SendMessageAsync(matchToQ, tks.Token));
                 logger.LogInformation("Queue new matches");
@@ -66,22 +72,5 @@ namespace PUBG.Analiser.Functions
             else
                 logger.LogInformation("No new matches to queue");
         }
-
-    }
-
-    public class MyInfo
-    {
-        public MyScheduleStatus ScheduleStatus { get; set; }
-
-        public bool IsPastDue { get; set; }
-    }
-
-    public class MyScheduleStatus
-    {
-        public DateTime Last { get; set; }
-
-        public DateTime Next { get; set; }
-
-        public DateTime LastUpdated { get; set; }
     }
 }

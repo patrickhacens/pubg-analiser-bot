@@ -1,7 +1,6 @@
-﻿namespace PUBG.Models.Telemetry
+﻿namespace PUBG.Models.Telemetry;
+
+public class RedZoneEnded : Event
 {
-    public class RedZoneEnded : Event
-    {
-        public Character[] Drivers { get; set; }
-    }
+    public Character[] Drivers { get; set; }
 }

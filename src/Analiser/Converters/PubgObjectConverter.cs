@@ -37,7 +37,7 @@ namespace PUBG.Converters
             }
 
 
-            return jobj.ToObject<PubgObject>();
+            return jobj.ToObject<PubgObject>(serializer);
         }
 
         public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)

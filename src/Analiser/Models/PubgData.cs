@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace PUBG.Models
 {
@@ -11,6 +12,7 @@ namespace PUBG.Models
         public IEnumerable<PubgObject> Included { get; set; }
     }
 
+    [DebuggerDisplay("{Type}")]
     public class PubgObject
     {
         public ModelType Type { get; set; }

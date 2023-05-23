@@ -1,7 +1,6 @@
-﻿namespace PUBG.Models.Telemetry
+﻿namespace PUBG.Models.Telemetry;
+
+public class SwimStart : Event
 {
-    public class SwimStart : Event
-    {
-        public Character Character { get; set; }
-    }
+    public Character Character { get; set; }
 }

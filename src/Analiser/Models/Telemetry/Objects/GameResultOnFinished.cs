@@ -1,7 +1,6 @@
-﻿namespace PUBG.Models.Telemetry
+﻿namespace PUBG.Models.Telemetry;
+
+public class GameResultOnFinished
 {
-    public class GameResultOnFinished
-    {
-        public GameResultData[] Results { get; set; }
-    }
+    public GameResultData[] Results { get; set; }
 }

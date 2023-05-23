@@ -1,8 +1,7 @@
-﻿namespace PUBG.Models.Telemetry
+﻿namespace PUBG.Models.Telemetry;
+
+public class ItemEquip : Event
 {
-    public class ItemEquip : Event
-    {
-        public Character Character { get; set; }
-        public Item Item { get; set; }
-    }
+    public Character Character { get; set; }
+    public Item Item { get; set; }
 }

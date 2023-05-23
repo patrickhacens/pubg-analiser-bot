@@ -71,9 +71,8 @@ namespace PUBG.Converters
                     EventType.LogPlayerDestroyBreachableWall => j.ToObject<PlayerDestroyBreachableWall>(),
                     _ => j.ToObject<Event>(),
                 };
-            }
+            }   
             return new Event();
-            throw new NotImplementedException($"no enum for EventType = {j["_T"]}");
         }
 
         public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)

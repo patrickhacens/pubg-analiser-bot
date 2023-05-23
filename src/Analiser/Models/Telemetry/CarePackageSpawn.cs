@@ -1,7 +1,6 @@
-﻿namespace PUBG.Models.Telemetry
+﻿namespace PUBG.Models.Telemetry;
+
+public class CarePackageSpawn : Event
 {
-    public class CarePackageSpawn : Event
-    {
-        public ItemPackage ItemPackage { get; set; }
-    }
+    public ItemPackage ItemPackage { get; set; }
 }

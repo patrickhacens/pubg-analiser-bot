@@ -1,9 +1,8 @@
-﻿namespace PUBG.Models.Telemetry
+﻿namespace PUBG.Models.Telemetry;
+
+public enum AttackType
 {
-    public enum AttackType
-    {
-        BlackZone,
-        RedZone,
-        Weapon
-    }
+    BlackZone,
+    RedZone,
+    Weapon
 }

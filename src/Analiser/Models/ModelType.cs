@@ -1,17 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿namespace PUBG.Models;
 
-namespace PUBG.Models
+public enum ModelType
 {
-    public enum ModelType
-    {
-        Match,
-        Player,
-        Roster,
-        Participant,
-        Asset
-    }
+    Match,
+    Player,
+    Roster,
+    Participant,
+    Asset
 }

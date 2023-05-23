@@ -1,9 +1,12 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace PUBG.Models
 {
+    [DebuggerDisplay("Player {Name}")]
     public class Player : PubgObject<PlayerAttributes>
     {
+        public string Name => Attributes?.Name;
         public IEnumerable<PubgObject> Matches => Relationships?["matches"]?.Data;
 
         public IEnumerable<PubgObject> Assets => Relationships?["assets"]?.Data;

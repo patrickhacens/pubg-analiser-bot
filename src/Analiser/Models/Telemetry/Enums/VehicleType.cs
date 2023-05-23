@@ -1,13 +1,12 @@
-﻿namespace PUBG.Models.Telemetry
+﻿namespace PUBG.Models.Telemetry;
+
+public enum VehicleType
 {
-    public enum VehicleType
-    {
-        EmergencyPickup,
-        FloatingVehicle,
-        FlyingVehicle,
-        Parachute,
-        TransportAircraft,
-        WheeledVehicle,
-        Mortar
-    }
+    EmergencyPickup,
+    FloatingVehicle,
+    FlyingVehicle,
+    Parachute,
+    TransportAircraft,
+    WheeledVehicle,
+    Mortar
 }

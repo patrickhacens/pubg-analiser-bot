@@ -1,20 +1,35 @@
-﻿namespace PUBG.Models.Telemetry
+﻿namespace PUBG.Models.Telemetry;
+
+public enum ObjectType
 {
-    public enum ObjectType
-    {
-        Caraudio,
-        Door,
-        DoubleSlidingDoor,
-        Fence,
-        FuelPuddle,
-        Hay,
-        Jerrycan,
-        JerryCan,
-        Jukebox,
-        JukeBox,
-        PropaneTank,
-        VendingMachine,
-        Window,
-        Camera
-    }
+    Caraudio,
+    Door,
+    DoubleSlidingDoor,
+    Fence,
+    FuelPuddle,
+    Hay,
+    Jerrycan,
+    JerryCan,
+    Jukebox,
+    JukeBox,
+    PropaneTank,
+    VendingMachine,
+    Window,
+    Camera,
+    CampSupplyBox_Rare_A,
+    CampSupplyBox_Rare_B,
+    CampSupplyBox_Rare_C,
+    Ascender,
+    BearBox_A,
+    BearBox_B,
+    BearBox_C,
+    Cartoplights,
+    LockedDoor,
+    CampSupplyBox_Weapon_A,
+    CampSupplyBox_Weapon_B,
+    CampSupplyBox_Weapon_C,
+    BulletproofShield,
+    CampSupplyBox_Attachment_A,
+    CampSupplyBox_Attachment_B,
+    CampSupplyBox_Attachment_C,
 }

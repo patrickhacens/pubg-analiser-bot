@@ -1,7 +1,6 @@
-﻿namespace PUBG.Models.Telemetry
+﻿namespace PUBG.Models.Telemetry;
+
+public class GameStatePeriodic : Event
 {
-    public class GameStatePeriodic : Event
-    {
-        public GameState GameState { get; set; }
-    }
+    public GameState GameState { get; set; }
 }

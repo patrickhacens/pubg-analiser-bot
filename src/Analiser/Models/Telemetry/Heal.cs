@@ -1,11 +1,10 @@
-﻿namespace PUBG.Models.Telemetry
+﻿namespace PUBG.Models.Telemetry;
+
+public class Heal : Event
 {
-    public class Heal : Event
-    {
-        public Character Character { get; set; }
+    public Character Character { get; set; }
 
-        public Item Item { get; set; }
+    public Item Item { get; set; }
 
-        public float HealAmount { get; set; }
-    }
+    public float HealAmount { get; set; }
 }

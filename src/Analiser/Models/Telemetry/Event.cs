@@ -1,11 +1,10 @@
 ﻿using System;
 
-namespace PUBG.Models.Telemetry
+namespace PUBG.Models.Telemetry;
+
+public class Event
 {
-    public class Event
-    {
-        public DateTime _D { get; set; }
-        public EventType _T { get; set; }
-        public Common Common { get; set; }
-    }
+    public DateTime _D { get; set; }
+    public EventType _T { get; set; }
+    public Common Common { get; set; }
 }

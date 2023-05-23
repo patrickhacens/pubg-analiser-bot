@@ -1,9 +1,8 @@
-﻿namespace PUBG.Models.Telemetry
-{
-    public class EmPickupLiftOff : Event
-    {
-        public Character Instigator { get; set; }
+﻿namespace PUBG.Models.Telemetry;
 
-        public Character[] Riders { get; set; }
-    }
+public class EmPickupLiftOff : Event
+{
+    public Character Instigator { get; set; }
+
+    public Character[] Riders { get; set; }
 }

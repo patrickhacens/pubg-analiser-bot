@@ -1,13 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace PUBG.Models
 {
+    [DebuggerDisplay("Match {MapName}")]
     public class Match : PubgObject<MatchAttributes>
     {
+        public string MapName => Attributes?.MapName;
         public IEnumerable<PubgObject> Rosters => Relationships?["rosters"]?.Data;
         public IEnumerable<PubgObject> Assets => Relationships?["assets"]?.Data;
     }

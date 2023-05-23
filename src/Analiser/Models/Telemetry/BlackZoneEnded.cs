@@ -1,7 +1,6 @@
-﻿namespace PUBG.Models.Telemetry
+﻿namespace PUBG.Models.Telemetry;
+
+public class BlackZoneEnded : Event
 {
-    public class BlackZoneEnded : Event
-    {
-        public Character[] Survivors { get; set; }
-    }
+    public Character[] Survivors { get; set; }
 }

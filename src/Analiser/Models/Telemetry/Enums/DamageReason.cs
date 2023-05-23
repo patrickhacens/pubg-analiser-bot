@@ -1,15 +1,14 @@
-﻿namespace PUBG.Models.Telemetry
+﻿namespace PUBG.Models.Telemetry;
+
+public enum DamageReason
 {
-    public enum DamageReason
-    {
-        ArmShot,
-        HeadShot,
-        LegShot,
-        None,
-        NonSpecific,
-        PelvisShot,
-        SimlateAIBeKilled,
-        SimulateAIBeKilled,
-        TorsoShot
-    }
+    ArmShot,
+    HeadShot,
+    LegShot,
+    None,
+    NonSpecific,
+    PelvisShot,
+    SimlateAIBeKilled,
+    SimulateAIBeKilled,
+    TorsoShot
 }

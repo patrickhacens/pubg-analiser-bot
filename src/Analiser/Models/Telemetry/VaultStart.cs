@@ -1,8 +1,7 @@
-﻿namespace PUBG.Models.Telemetry
+﻿namespace PUBG.Models.Telemetry;
+
+public class VaultStart : Event
 {
-    public class VaultStart : Event
-    {
-        public Character Character { get; set; }
-        public bool IsLedgeGrab { get; set; }
-    }
+    public Character Character { get; set; }
+    public bool IsLedgeGrab { get; set; }
 }

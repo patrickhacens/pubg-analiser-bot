@@ -1,13 +1,13 @@
-﻿namespace PUBG.Models.Telemetry
+﻿namespace PUBG.Models.Telemetry;
+
+public enum ItemCategory
 {
-    public enum ItemCategory
-    {
-        Ammunition,
-        Attachment,
-        Equipment,
-        Event,
-        Use,
-        Weapon,
-        Belt
-    }
+    Ammunition,
+    Attachment,
+    Equipment,
+    Event,
+    Use,
+    Weapon,
+    Belt,
+    None
 }
