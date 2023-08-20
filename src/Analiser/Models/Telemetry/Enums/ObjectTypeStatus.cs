@@ -17,5 +17,6 @@ public enum ObjectTypeStatus
     Ascender_End_Dismount_Top,
     Ascender_End_Dismount_Bottom,
     LockedDoor_Unlocked,
-    UseStart
+    UseStart,
+    UseEnd
 }
