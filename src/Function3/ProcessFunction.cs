@@ -44,6 +44,7 @@ public class ProcessFunction
         CancellationTokenSource tks = new();
 
         var queue = new QueueClient(storageOptions.ConnectionString, storageOptions.QueueName);
+        var errorQueue = new QueueClient(storageOptions.ConnectionString, storageOptions.ErrorQueueName);
 
         var peek = await queue.PeekMessageAsync(tks.Token);
         if (peek.Value == null)
@@ -63,11 +64,11 @@ public class ProcessFunction
         while (requests < 10)
         {
             string matchId = String.Empty;
+            logger.LogInformation("Retrieving match to process");
+            var message = await queue.ReceiveMessageAsync(TimeSpan.FromMinutes(5), tks.Token);
             try
             {
 
-                logger.LogInformation("Retrieving match to process");
-                var message = await queue.ReceiveMessageAsync(TimeSpan.FromMinutes(5), tks.Token);
                 if (message.Value == null)
                 {
                     logger.LogInformation("No more message on queue");
@@ -197,7 +198,10 @@ public class ProcessFunction
             }
             catch (Exception ex)
             {
-                logger.LogError(ex, "error while processing match {matchId}", matchId);
+                logger.LogError(ex, "error while processing match {matchId} moving to another queue", matchId);
+                await errorQueue.CreateIfNotExistsAsync(null, CancellationToken.None);
+                await errorQueue.SendMessageAsync(matchId, CancellationToken.None);
+                await queue.DeleteMessageAsync(message.Value.MessageId, message.Value.PopReceipt, CancellationToken.None);
             }
         }
     }

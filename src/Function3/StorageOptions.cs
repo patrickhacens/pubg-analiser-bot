@@ -9,4 +9,6 @@ public class StorageOptions
     public string MatchTableName { get; set; } = null!;
 
     public string QueueName { get; set; } = null!;
+
+    public string ErrorQueueName { get; set; }
 }

@@ -45,5 +45,6 @@ public enum DamageTypeCategory
     Damage_Blizzard,
     Damage_Explosion_GasPump,
     Damage_CableCarHit,
-    Damage_DronePackage
+    Damage_DronePackage,
+    Damage_SandStorm
 }

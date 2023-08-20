@@ -21,5 +21,6 @@ public enum ItemSubCategory
     Belt,
     Ascender,
     Bluechip,
-    Repair
+    Repair,
+    Shirts
 }

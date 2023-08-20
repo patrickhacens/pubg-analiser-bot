@@ -32,4 +32,5 @@ public enum ObjectType
     CampSupplyBox_Attachment_A,
     CampSupplyBox_Attachment_B,
     CampSupplyBox_Attachment_C,
+    Zipline
 }
