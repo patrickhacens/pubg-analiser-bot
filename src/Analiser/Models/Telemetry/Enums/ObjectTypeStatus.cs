@@ -18,5 +18,9 @@ public enum ObjectTypeStatus
     Ascender_End_Dismount_Bottom,
     LockedDoor_Unlocked,
     UseStart,
-    UseEnd
+    UseEnd,
+	ENABLE,
+	DISABLE_TEMP_DELAY,
+	Locked,
+	DISABLE_PERM_LACK
 }

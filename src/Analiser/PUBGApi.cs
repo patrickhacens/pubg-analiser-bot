@@ -3,6 +3,7 @@ using PUBG.Models;
 using PUBG.Models.Telemetry;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -62,13 +63,22 @@ namespace PUBG
             => GetAs<PubgData<Match>>($"matches/{id}", cancellation);
 
         public Task<Telemetry> Telemetry(PubgData<Match> match, CancellationToken cancellation = default)
-            => GetAs<Telemetry>(match
+            => GetAs<Telemetry>(GetTelemetryUrl(match), cancellation);
+
+        private string GetTelemetryUrl(PubgData<Match> match) => match
                 .Included
                 .OfType<Asset>()
                 .First()
                 .Attributes
-                .Url, cancellation);
+                .Url;
 
+
+		public async Task CacheTelemetry(PubgData<Match> match, Stream stream, CancellationToken cancellation = default)
+        {
+            var response = await client.GetAsync(GetTelemetryUrl(match), cancellation);
+            using (var readStream = await response.Content.ReadAsStreamAsync())
+                await readStream.CopyToAsync(stream);
+        }
 
         private async Task<T> GetAs<T>(string url, CancellationToken cancellation)
         {

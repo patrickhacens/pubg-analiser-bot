@@ -46,5 +46,6 @@ public enum DamageTypeCategory
     Damage_Explosion_GasPump,
     Damage_CableCarHit,
     Damage_DronePackage,
-    Damage_SandStorm
+    Damage_SandStorm,
+	Damage_DropStructHit,
 }
