@@ -106,7 +106,7 @@ public class ProcessFunction
                     var teams = rosters.Select(d => analiser.AnaliseTeam(d.Id, d.Participants.Select(d => matchData.Included.OfType<MatchParticipant>().First(p => p.Id == d.Id).Attributes.Stats.PlayerId).ToArray())).ToList();
                     if (teams.Any())
                     {
-                        logger.LogInformation("{count} analised in match, retrieving discord client", teams.Count);
+                        logger.LogInformation("{count} analysed in match, retrieving discord client", teams.Count);
 
                         var matchLogDiscordClient = new DiscordWebhookClient(configuration.GetValue<string>("MatchLogDiscordWebhook"));
                         var chickenDinnerDiscordClient = new DiscordWebhookClient(configuration.GetValue<string>("ChickenDinnerWebhook"));
@@ -178,8 +178,8 @@ public class ProcessFunction
 
                                 var winembed = winBuilder
                                     .WithFooter("Clique no link para ver o match log")
-                                    .WithUrl($"https://discord.com/channels/468173278952030209/882740719624814602/{messageId}")
-                                    .Build();
+                                    .WithUrl($"https://discord.com/channels/1174151137180528682/1174152555383758930/{messageId}")
+									.Build();
 
 
                                 await chickenDinnerDiscordClient.SendMessageAsync(embeds: new Embed[] { winembed });
@@ -189,7 +189,7 @@ public class ProcessFunction
                     }
                     else
                     {
-                        logger.LogInformation("No teams analised in match");
+                        logger.LogInformation("No teams analysed in match");
                     }
                     requests++;
                     logger.LogInformation("Removing message");

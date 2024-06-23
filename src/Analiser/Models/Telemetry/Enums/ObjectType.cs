@@ -37,5 +37,7 @@ public enum ObjectType
 	FireworkLauncher,
 	Bamboo,
 	UnlockableItemPackage,
-	BirdCage
+	BirdCage,
+	HittableActorSpawnContainer,
+	NewJeansTrailer
 }

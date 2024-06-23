@@ -2,6 +2,7 @@
 using Newtonsoft.Json;
 using PUBG;
 using PUBG.Models;
+using PUBG.Models.Telemetry;
 using System;
 
 //const string playerPath = "C:\\Users\\patri\\Downloads\\players.json";
@@ -28,13 +29,20 @@ PUBGApi pubg = new(new PUBGApiOptions()
     Shard = "steam"
 });
 
-
-var match = await pubg.Match("628eea0c-e6d5-4508-9780-7ae7c76dc9af");
-
+var matchId = "23a1d4fa-3551-410a-9a65-c03515b57194";
 
 
-////var match = await pubg.Match(matchId);
+var cachePath = "C:\\Users\\patri\\AppData\\Local\\Temp\\tmp1a.tmp";
+var cacheExists = File.Exists(cachePath);
+var match = await pubg.Match(matchId);
+Stream stream = File.Open(cachePath, FileMode.OpenOrCreate, FileAccess.ReadWrite);
+if (!cacheExists)
+    await pubg.CacheTelemetry(match, stream);
 
-//var result = JsonConvert.DeserializeObject<PubgData<Match>>(content, sOptions);
+stream.Position = 0;
+TextReader tr = new StreamReader(stream);
+var str = await tr.ReadToEndAsync();
+
+var result = JsonConvert.DeserializeObject<Telemetry>(str, sOptions);
 
 Thread.Sleep(Timeout.Infinite);
