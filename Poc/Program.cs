@@ -25,14 +25,15 @@ JsonSerializerSettings sOptions = new()
 //string matchId = "3f004790-d2bd-4b31-a235-9d498d2d5ccc";
 PUBGApi pubg = new(new PUBGApiOptions()
 {
-    ApiKey = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJqdGkiOiJiNmViNTg2MC1lZjMyLTAxMzktNTliZS0wNjcxMjU5ZjdmMjgiLCJpc3MiOiJnYW1lbG9ja2VyIiwiaWF0IjoxNjMwNzA3NDc2LCJwdWIiOiJibHVlaG9sZSIsInRpdGxlIjoicHViZyIsImFwcCI6IjEwMHNfYm90In0.lI3xmD2QrznuCxRCT-djKNj8wYlUSj7-RanLouHiGfQ",
+    ApiKey = "",
     Shard = "steam"
 });
 
-var matchId = "23a1d4fa-3551-410a-9a65-c03515b57194";
+var matchId = "e19f9367-50b5-4873-8226-61f15e831332";
 
 
-var cachePath = "C:\\Users\\patri\\AppData\\Local\\Temp\\tmp1a.tmp";
+
+var cachePath = $"{Path.GetTempPath()}\\{matchId}.tmp";
 var cacheExists = File.Exists(cachePath);
 var match = await pubg.Match(matchId);
 Stream stream = File.Open(cachePath, FileMode.OpenOrCreate, FileAccess.ReadWrite);

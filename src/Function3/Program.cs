@@ -10,6 +10,7 @@ var builder = new HostBuilder()
     .ConfigureAppConfiguration(confi => confi.AddJsonFile("local.settings.json", true, true))
     .ConfigureFunctionsWorkerDefaults();
 
+
 builder.ConfigureServices((context, services) =>
 {
     StorageOptions storageOptions = new();

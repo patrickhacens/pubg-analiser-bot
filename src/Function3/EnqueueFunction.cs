@@ -8,22 +8,15 @@ using PUBG.Analiser.Functions.Models;
 
 namespace PUBG.Analiser.Functions
 {
-    public class EnqueueFunction
-    {
-        private readonly ILogger logger;
-        private readonly StorageOptions storageOptions;
-        private readonly PUBGApi pubg;
+    public class EnqueueFunction(ILoggerFactory loggerFactory,
+		StorageOptions storageOptions,
+		PUBGApi pubg)
+	{
+        private readonly ILogger logger = loggerFactory.CreateLogger<EnqueueFunction>();
+        private readonly StorageOptions storageOptions = storageOptions;
+        private readonly PUBGApi pubg = pubg;
 
-        public EnqueueFunction(ILoggerFactory loggerFactory, 
-            StorageOptions storageOptions,
-            PUBGApi pubg)
-        {
-            logger = loggerFactory.CreateLogger<EnqueueFunction>();
-            this.storageOptions=storageOptions;
-            this.pubg=pubg;
-        }
-
-        [Function("EnqueueFunction")]
+		[Function("EnqueueFunction")]
         public async Task Run(
 #if DEBUG
             [TimerTrigger("0 * * * * *")] 

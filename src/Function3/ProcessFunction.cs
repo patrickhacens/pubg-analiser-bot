@@ -10,26 +10,17 @@ using PUBG.Analiser.Functions.Models;
 
 namespace PUBG.Analiser.Functions;
 
-public class ProcessFunction
+public class ProcessFunction(ILoggerFactory loggerFactory,
+	StorageOptions storageOptions,
+	PUBGApi pubg,
+	IConfiguration configuration)
 {
-    private readonly ILogger logger;
-    private readonly StorageOptions storageOptions;
-    private readonly PUBGApi pubg;
-    private readonly IConfiguration configuration;
+    private readonly ILogger logger = loggerFactory.CreateLogger<ProcessFunction>();
+    private readonly StorageOptions storageOptions = storageOptions;
+    private readonly PUBGApi pubg = pubg;
+    private readonly IConfiguration configuration = configuration;
 
-    public ProcessFunction(ILoggerFactory loggerFactory,
-        StorageOptions storageOptions,
-        PUBGApi pubg,
-        IConfiguration configuration
-        )
-    {
-        logger = loggerFactory.CreateLogger<ProcessFunction>();
-        this.storageOptions=storageOptions;
-        this.pubg=pubg;
-        this.configuration=configuration;
-    }
-
-    [Function("ProcessFunction")]
+	[Function("ProcessFunction")]
     public async Task Run(
 #if DEBUG
             [TimerTrigger("0 * * * * *")] 
@@ -38,8 +29,7 @@ public class ProcessFunction
 #endif
         MyInfo myTimer)
     {
-        logger.LogInformation("Process function executed at: {time}", DateTime.Now);
-        logger.LogInformation("Next timer schedule at: {time}", myTimer?.ScheduleStatus?.Next);
+        logger.LogInformation("Process function executed at: {time} next at {nextTime}", DateTime.Now, myTimer?.ScheduleStatus?.Next);
 
         CancellationTokenSource tks = new();
 
@@ -104,7 +94,7 @@ public class ProcessFunction
                     var analiser = new TelemetryAnaliser(telemetry);
 
                     var teams = rosters.Select(d => analiser.AnaliseTeam(d.Id, d.Participants.Select(d => matchData.Included.OfType<MatchParticipant>().First(p => p.Id == d.Id).Attributes.Stats.PlayerId).ToArray())).ToList();
-                    if (teams.Any())
+                    if (teams.Count > 0)
                     {
                         logger.LogInformation("{count} analysed in match, retrieving discord client", teams.Count);
 
@@ -121,8 +111,8 @@ public class ProcessFunction
 
                             static int getLength(EmbedField field) => field.Name.Length + field.Value.Length;
 
-                            List<List<EmbedFieldBuilder>> groups = new();
-                            List<EmbedFieldBuilder> group = new();
+                            List<List<EmbedFieldBuilder>> groups = [];
+                            List<EmbedFieldBuilder> group = [];
                             int currentGroupLength = 0;
 
                             while (fieldqueue.Count > 0)
@@ -132,7 +122,7 @@ public class ProcessFunction
                                 if (currentGroupLength + targetLength >= 5000)
                                 {
                                     groups.Add(group);
-                                    group = new List<EmbedFieldBuilder>() { fb.builder };
+                                    group = [fb.builder];
                                     currentGroupLength = targetLength;
                                 }
                                 else
@@ -141,7 +131,7 @@ public class ProcessFunction
                                     currentGroupLength += targetLength;
                                 }
                             }
-                            if (group.Any())
+                            if (group.Count > 0)
                             {
                                 groups.Add(group);
                             }
@@ -155,7 +145,7 @@ public class ProcessFunction
                                 {
                                     var mId = await matchLogDiscordClient.SendMessageAsync(
                                             text: String.Join("; ", team.Members.Select(d => players.FirstOrDefault(f => f.Id == d.Id)?.DiscordId).Where(d => !String.IsNullOrWhiteSpace(d))),
-                                            embeds: new Embed[] { embed });
+                                            embeds: [embed]);
                                     if (messageId == 0)
                                         messageId = mId;
                                 }
@@ -167,7 +157,7 @@ public class ProcessFunction
                                     .Build();
                                 messageId = await matchLogDiscordClient.SendMessageAsync(
                                     text: String.Join("; ", team.Members.Select(d => players.FirstOrDefault(f => f.Id == d.Id)?.DiscordId).Where(d => !String.IsNullOrWhiteSpace(d))),
-                                    embeds: new Embed[] { embed });
+                                    embeds: [embed]);
 
 
                             }
@@ -182,7 +172,7 @@ public class ProcessFunction
 									.Build();
 
 
-                                await chickenDinnerDiscordClient.SendMessageAsync(embeds: new Embed[] { winembed });
+                                await chickenDinnerDiscordClient.SendMessageAsync(embeds: [winembed]);
                             }
 
                         }

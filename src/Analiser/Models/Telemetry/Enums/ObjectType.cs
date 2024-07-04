@@ -39,5 +39,7 @@ public enum ObjectType
 	UnlockableItemPackage,
 	BirdCage,
 	HittableActorSpawnContainer,
-	NewJeansTrailer
+	NewJeansTrailer,
+	ZiplinegunRope,
+	NewJeansJukeBox
 }
