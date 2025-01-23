@@ -41,5 +41,7 @@ public enum ObjectType
 	HittableActorSpawnContainer,
 	NewJeansTrailer,
 	ZiplinegunRope,
-	NewJeansJukeBox
+	NewJeansJukeBox,
+    Blast,
+	Foliage
 }

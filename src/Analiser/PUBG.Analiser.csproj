@@ -3,6 +3,10 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.1</TargetFramework>
 	  <LangVersion>10</LangVersion>
+	  <Title>PUBG.Api</Title>
+	  <PackageProjectUrl>https://github.com/patrickhacens/pubg-analiser-bot</PackageProjectUrl>
+	  <Description>PUBG API that can download and give some analysis</Description>
+	  <RepositoryUrl>https://github.com/patrickhacens/pubg-analiser-bot</RepositoryUrl>
   </PropertyGroup>
 
   <ItemGroup>
